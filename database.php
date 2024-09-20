@@ -163,7 +163,7 @@ if ($http_code == 200 && isset($data['results'])) {
         if ($result_check->num_rows > 0) {
             // Update the existing record
             $sql_update = "UPDATE kobo_data SET 
-                form_uuid = '$form_uuid',
+                submission_id = '$submission_id',
                 tstart = '$tstart', 
                 tend = '$tend', 
                 ttoday = '$ttoday', 
@@ -271,7 +271,7 @@ if ($http_code == 200 && isset($data['results'])) {
         } else {
             // Insert a new record
             $sql_insert = "INSERT INTO kobo_data (
-                submission_id, form_uuid, tstart, tend, ttoday, username, phonenumber, deviceid, date_interview, 
+                submission_id, tstart, tend, ttoday, username, phonenumber, deviceid, date_interview, 
                 name_interview, sex_interview, name_respon, sex_respon, work_company, province, district, commune, 
                 village, q020101, q020102, q020103, q020104, q020105, q020106, q020201, q020203, q02020401, 
                 q02020402, q02020403, q02020404, q02020405, q02020499, q020205, q030101, q030101a, q030102, 
@@ -284,7 +284,7 @@ if ($http_code == 200 && isset($data['results'])) {
                 animals6month_total, animals_01, animals_02, animals_03, animals_99, animals_total, q050302, 
                 q050401, q050402, comments, ifinish, version, instance_id, uuid, submission_time, submitted_by)
                 VALUES (
-                '$submission_id', '$form_uuid', '$tstart', '$tend', '$ttoday', '$username', '$phonenumber', 
+                '$submission_id', '$tstart', '$tend', '$ttoday', '$username', '$phonenumber', 
                 '$deviceid', '$date_interview', '$name_interview', '$sex_interview', '$name_respon', '$sex_respon', 
                 '$work_company', '$province', '$district', '$commune', '$village', '$q020101', '$q020102', '$q020103', 
                 '$q020104', '$q020105', '$q020106', '$q020201', '$q020203', '$q02020401', '$q02020402', '$q02020403', 
