@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install mysqli
 
 # Set the working directory
-WORKDIR /usr/src/app
+WORKDIR /usr/src/kobo
 
 # Clone the repository
 RUN git clone https://github.com/Chlakhna/kobo.git .
