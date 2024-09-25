@@ -1,13 +1,16 @@
 <?php
+// Get environment variables for database connection
 $servername = getenv('DB_SERVERNAME');  
 $username = getenv('DB_USERNAME');         
 $password = getenv('DB_PASSWORD');   
 $dbname = getenv('DB_NAME');            
-$port = getenv('DB_PORT');  
+$port = getenv('DB_PORT');
 
+// KoboToolbox API details
 $kobo_api_url = 'https://eu.kobotoolbox.org/api/v2/assets/arijX3itvjmaPxmCKPgkqz/data/?format=json&_last_updated__gt=2024-09-18+05%3A49%3A09';
-$kobo_token = 'ea97948efb2a6f133463d617277b69caff728630';  
+$kobo_token = 'ea97948efb2a6f133463d617277b69caff728630';
 
+// Connect to the database
 $conn = new mysqli($servername, $username, $password, $dbname, $port);
 
 if ($conn->connect_error) {
@@ -155,6 +158,7 @@ if ($http_code == 200 && isset($data['results'])) {
         $submission_time = isset($record['_submission_time']) ? $record['_submission_time'] : null;
         $submitted_by = isset($record['_submitted_by']) ? $record['_submitted_by'] : null;
 
+
         // Check if the submission already exists in the database
         $sql_check = "SELECT * FROM kobo_data WHERE submission_id = '$submission_id'";
         $result_check = $conn->query($sql_check);
@@ -269,7 +273,7 @@ if ($http_code == 200 && isset($data['results'])) {
         } else {
             // Insert a new record
             $sql_insert = "INSERT INTO kobo_data (
-                submission_id, tstart, tend, ttoday, username, phonenumber, deviceid, date_interview, 
+               submission_id, tstart, tend, ttoday, username, phonenumber, deviceid, date_interview, 
                 name_interview, sex_interview, name_respon, sex_respon, work_company, province, district, commune, 
                 village, q020101, q020102, q020103, q020104, q020105, q020106, q020201, q020203, q02020401, 
                 q02020402, q02020403, q02020404, q02020405, q02020499, q020205, q030101, q030101a, q030102, 
