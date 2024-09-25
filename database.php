@@ -1,9 +1,9 @@
 <?php
-$servername = 'mysql-2b9c8eba-chlakhna702-5683.h.aivencloud.com';  
-$username = 'avnadmin';         
-$password = 'AVNS_EMM0l9B433aCexcaKkt';   
-$dbname = 'dpa';            
-$port = 10605; 
+$servername = getenv('DB_SERVERNAME');  
+$username = getenv('DB_USERNAME');         
+$password = getenv('DB_PASSWORD');   
+$dbname = getenv('DB_NAME');            
+$port = getenv('DB_PORT');  
 
 $kobo_api_url = 'https://eu.kobotoolbox.org/api/v2/assets/arijX3itvjmaPxmCKPgkqz/data/?format=json&_last_updated__gt=2024-09-18+05%3A49%3A09';
 $kobo_token = 'ea97948efb2a6f133463d617277b69caff728630';  
