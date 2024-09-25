@@ -7,7 +7,7 @@ $dbname = getenv('DB_NAME');
 $port = getenv('DB_PORT');
 
 // KoboToolbox API details
-$kobo_api_url = 'https://eu.kobotoolbox.org/api/v2/assets/arijX3itvjmaPxmCKPgkqz/data/?format=json&_last_updated__gt=2024-09-18+05%3A49%3A09';
+$kobo_api_url = 'https://eu.kobotoolbox.org/api/v2/assets/arijX3itvjmaPxmCKPgkqz/data/?format=json';
 $kobo_token = 'ea97948efb2a6f133463d617277b69caff728630';
 
 // Connect to the database
@@ -27,9 +27,9 @@ if ($result->num_rows > 0) {
     $last_updated_time = $row['last_updated_time'];
 }
 
-// Prepare the API URL to fetch data submitted after the last fetch time
+// Only fetch records after the last updated time
 if ($last_updated_time) {
-    $kobo_api_url .= '?_last_updated__gt=' . urlencode($last_updated_time);
+    $kobo_api_url .= '&_last_updated__gt=' . urlencode($last_updated_time);
 }
 
 // Set up the cURL request to fetch data from KoboToolbox
@@ -44,6 +44,8 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
 $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
+
+
 
 // Decode the JSON response
 $data = json_decode($response, true);
