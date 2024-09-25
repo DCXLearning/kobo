@@ -1,4 +1,34 @@
 <?php
+// Bind to a port for Render Web Service
+$port = getenv('PORT') ?: 8080; // Render will provide the PORT environment variable
+
+// Start a simple HTTP server
+$socket = stream_socket_server("tcp://0.0.0.0:$port", $errno, $errstr);
+
+if (!$socket) {
+    echo "Error: Unable to create socket: $errstr ($errno)\n";
+    exit(1);
+}
+
+echo "Server running on port $port\n";
+
+// Function to handle incoming requests (even though we're not really serving anything)
+function handleRequest($client) {
+    fwrite($client, "HTTP/1.1 200 OK\r\n");
+    fwrite($client, "Content-Type: text/plain\r\n");
+    fwrite($client, "Connection: close\r\n");
+    fwrite($client, "\r\n");
+    fwrite($client, "This is a background process running as a web service!\n");
+    fclose($client);
+}
+
+// Keep accepting incoming connections in the background
+while ($client = @stream_socket_accept($socket, -1)) {
+    handleRequest($client);
+}
+
+// --- Your existing background process code starts here ---
+
 // Get environment variables for database connection
 $servername = getenv('DB_SERVERNAME');  
 $username = getenv('DB_USERNAME');         
@@ -27,10 +57,16 @@ if ($result->num_rows > 0) {
     $last_updated_time = $row['last_updated_time'];
 }
 
-// Only fetch records after the last updated time
+// Log the last updated time
+file_put_contents('debug_log.txt', "Last Updated Time: $last_updated_time\n", FILE_APPEND);
+
+// Append the last updated time to the KoboToolbox API URL
 if ($last_updated_time) {
     $kobo_api_url .= '&_last_updated__gt=' . urlencode($last_updated_time);
 }
+
+// Log the final API URL
+file_put_contents('debug_log.txt', "API URL: $kobo_api_url\n", FILE_APPEND);
 
 // Set up the cURL request to fetch data from KoboToolbox
 $ch = curl_init();
@@ -45,14 +81,19 @@ $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
-
-
 // Decode the JSON response
 $data = json_decode($response, true);
 
+// Log the response from KoboToolbox
+file_put_contents('kobo_response_log.txt', print_r($data, true), FILE_APPEND);
+
 // Check if data is received
 if ($http_code == 200 && isset($data['results'])) {
+    $counter = 0; // Optional counter to limit the number of records processed at once
     foreach ($data['results'] as $record) {
+        if ($counter >= 100) break; // Optional limit to process only a certain number of records
+        $counter++;
+
         // Retrieve fields from KoboToolbox JSON data, using isset to handle missing fields
         $submission_id = $record['_id'];
         $tstart = isset($record['Tstart']) ? $record['Tstart'] : null;
@@ -319,3 +360,10 @@ if ($http_code == 200 && isset($data['results'])) {
 // Close the MySQL connection
 $conn->close();
 ?>
+
+
+
+
+
+
+
