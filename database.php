@@ -12,20 +12,28 @@ if (!$socket) {
 
 echo "Server running on port $port\n";
 
-// Function to handle incoming requests (even though we're not really serving anything)
+// Simple HTTP response for incoming requests (this will just return a simple message)
 function handleRequest($client) {
-    fwrite($client, "HTTP/1.1 200 OK\r\n");
-    fwrite($client, "Content-Type: text/plain\r\n");
-    fwrite($client, "Connection: close\r\n");
-    fwrite($client, "\r\n");
-    fwrite($client, "This is a background process running as a web service!\n");
-    fclose($client);
+    if (is_resource($client)) {
+        // Check if the client is still connected before attempting to write
+        fwrite($client, "HTTP/1.1 200 OK\r\n");
+        fwrite($client, "Content-Type: text/plain\r\n");
+        fwrite($client, "Connection: close\r\n");
+        fwrite($client, "\r\n");
+        fwrite($client, "Background process running as a web service!\n");
+        fclose($client);
+    } else {
+        // If client is disconnected, skip writing
+        echo "Client disconnected before data could be sent.\n";
+    }
 }
 
 // Keep accepting incoming connections in the background
 while ($client = @stream_socket_accept($socket, -1)) {
     handleRequest($client);
 }
+
+ignore_user_abort(true);
 
 // --- Your existing background process code starts here ---
 
