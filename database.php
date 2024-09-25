@@ -1,6 +1,6 @@
 <?php
 // Bind to a port for Render Web Service
-$port = getenv('PORT') ?: 8080; // Render will provide the PORT environment variable
+$port = getenv('PORT'); // Render will provide the PORT environment variable
 
 // Start a simple HTTP server
 $socket = stream_socket_server("tcp://0.0.0.0:$port", $errno, $errstr);
