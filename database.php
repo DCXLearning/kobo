@@ -1,4 +1,4 @@
-// <?php
+
 // // Bind to a port for Render Web Service
 // $port = getenv('PORT'); // Render will provide the PORT environment variable
 
